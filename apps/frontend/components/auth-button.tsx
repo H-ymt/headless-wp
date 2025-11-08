@@ -52,11 +52,9 @@ export default function AuthButton() {
   if (authenticated) {
     return (
       <div className="flex items-center gap-4">
-        {userName && (
-          <span className="text-gray-700">こんにちは、{userName}さん</span>
-        )}
+        {userName && <span>{userName}</span>}
         <button
-          className="rounded-md bg-gray-600 px-4 py-2 text-white transition-colors hover:bg-gray-700"
+          className="border px-4 py-1 text-sm"
           onClick={handleLogout}
           type="button"
         >
@@ -67,10 +65,7 @@ export default function AuthButton() {
   }
 
   return (
-    <a
-      className="rounded-md bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
-      href="/login"
-    >
+    <a className="border px-4 py-1 text-sm" href="/login">
       ログイン
     </a>
   );

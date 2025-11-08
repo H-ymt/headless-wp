@@ -15,38 +15,22 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <body className="min-h-screen bg-gray-50">
-        <header className="bg-white shadow-sm">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <body className="min-h-screen bg-white">
+        <header className="border-b">
+          <div className="mx-auto max-w-4xl px-6">
             <div className="flex items-center justify-between py-4">
-              <Link className="font-bold text-2xl text-gray-900" href="/">
+              <Link className="text-xl" href="/">
                 Headless WP
               </Link>
-              <nav className="flex items-center gap-4">
-                <Link className="text-gray-700 hover:text-gray-900" href="/">
-                  ホーム
-                </Link>
-                <Link
-                  className="text-gray-700 hover:text-gray-900"
-                  href="/posts"
-                >
-                  投稿一覧
-                </Link>
+              <nav className="flex items-center gap-6">
+                <Link href="/">ホーム</Link>
+                <Link href="/posts">投稿</Link>
                 <AuthButton />
               </nav>
             </div>
           </div>
         </header>
-        <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          {children}
-        </main>
-        <footer className="mt-12 border-t bg-white">
-          <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-            <p className="text-center text-gray-600">
-              © 2024 Headless WordPress. Powered by Next.js
-            </p>
-          </div>
-        </footer>
+        <main className="mx-auto max-w-4xl px-6 py-12">{children}</main>
       </body>
     </html>
   );

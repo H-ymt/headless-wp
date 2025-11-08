@@ -29,25 +29,19 @@ export default function LoginPage() {
 
   return (
     <div className="mx-auto max-w-md">
-      <h1 className="mb-8 font-bold text-3xl text-gray-900">ログイン</h1>
-      <form
-        className="rounded-lg bg-white p-6 shadow-md"
-        onSubmit={handleSubmit}
-      >
+      <h1 className="mb-8 text-3xl">ログイン</h1>
+      <form onSubmit={handleSubmit}>
         {error && (
-          <div className="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+          <div className="mb-4 text-red-600">
             {error}
           </div>
         )}
         <div className="mb-4">
-          <label
-            className="mb-2 block font-medium text-gray-700 text-sm"
-            htmlFor="username"
-          >
+          <label className="mb-2 block text-sm" htmlFor="username">
             ユーザー名
           </label>
           <input
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border-b px-2 py-2 focus:outline-none"
             id="username"
             onChange={(e) => setUsername(e.target.value)}
             required
@@ -56,14 +50,11 @@ export default function LoginPage() {
           />
         </div>
         <div className="mb-6">
-          <label
-            className="mb-2 block font-medium text-gray-700 text-sm"
-            htmlFor="password"
-          >
+          <label className="mb-2 block text-sm" htmlFor="password">
             パスワード
           </label>
           <input
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border-b px-2 py-2 focus:outline-none"
             id="password"
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -72,16 +63,16 @@ export default function LoginPage() {
           />
         </div>
         <button
-          className="w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full border py-2 disabled:opacity-50"
           disabled={loading}
           type="submit"
         >
           {loading ? "ログイン中..." : "ログイン"}
         </button>
       </form>
-      <div className="mt-6 text-gray-600 text-sm">
+      <div className="mt-8 text-sm text-gray-400">
         <p className="mb-2">デフォルトのWordPressユーザー情報:</p>
-        <ul className="list-inside list-disc space-y-1">
+        <ul className="space-y-1">
           <li>ユーザー名: admin</li>
           <li>パスワード: password</li>
         </ul>
