@@ -21,7 +21,10 @@ export default function RootLayout({
               <Link className="text-xl" href="/">
                 Headless WP
               </Link>
-              <nav className="flex items-center gap-6">
+              <nav
+                aria-label="メインナビゲーション"
+                className="flex items-center gap-6"
+              >
                 <Link href="/">ホーム</Link>
                 <Link href="/posts">投稿</Link>
               </nav>

@@ -31,7 +31,11 @@ export default function LoginPage() {
     <div className="mx-auto max-w-md">
       <h1 className="mb-8 text-3xl">ログイン</h1>
       <form onSubmit={handleSubmit}>
-        {error && <div className="mb-4 text-red-600">{error}</div>}
+        {error && (
+          <div className="mb-4 text-red-600" role="alert">
+            {error}
+          </div>
+        )}
         <div className="mb-4">
           <label className="mb-2 block text-sm" htmlFor="username">
             ユーザー名

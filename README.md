@@ -9,6 +9,9 @@ WordPress をヘッドレス CMS として使用し、Next.js 16 で構築され
 - **TypeScript**: 型安全な開発
 - **Tailwind CSS v4**: 設定ファイルなしのモダンなスタイリング
 - **JWT 認証**: WordPress REST API との認証機能
+- **XSS 対策**: DOMPurify による HTML サニタイゼーション
+- **画像最適化**: Next.js Image コンポーネントによる自動最適化
+- **エラーハンドリング**: グローバルエラーハンドリングとカスタム 404 ページ
 
 ## セットアップ
 
@@ -52,13 +55,22 @@ WordPress 管理画面にログイン後、以下の手順で JWT 認証を有�
 
 ### 4. 環境変数の設定
 
-`apps/frontend/.env.local.example`をコピーして`apps/frontend/.env.local`を作成：
+`apps/frontend/.env.local`ファイルを作成して、以下の環境変数を設定してください：
 
 ```bash
-cp apps/frontend/.env.local.example apps/frontend/.env.local
+# WordPress のベース URL
+NEXT_PUBLIC_WP_URL=http://localhost:8888
+
+# WordPress REST API の URL（オプション、指定しない場合は自動生成）
+# NEXT_PUBLIC_WP_API_URL=http://localhost:8888/wp-json/wp/v2
+
+# JWT 認証エンドポイントの URL（オプション、指定しない場合は自動生成）
+# NEXT_PUBLIC_WP_JWT_URL=http://localhost:8888/wp-json/jwt-auth/v1
 ```
 
-必要に応じて環境変数を調整してください。
+開発環境では通常、`NEXT_PUBLIC_WP_URL`のみ設定すれば問題ありません。
+
+**注意**: `.env.local`ファイルは Git にコミットされません（`.gitignore`に含まれています）。本番環境では、実際の WordPress サーバーの URL を設定してください。
 
 ### 5. 開発サーバーの起動
 
@@ -90,23 +102,47 @@ pnpm --filter @headless-wp/frontend dev
 
 ## プロジェクト構造
 
+このプロジェクトは **feature-based 構造** を採用しています。機能ごとにコードが集約され、関連するコードが近くに配置されます。
+
 ```
 .
 ├── apps/
 │   └── frontend/           # Next.js アプリケーション
-│       ├── app/            # Next.js App Router
-│       │   ├── layout.tsx # ルートレイアウト
-│       │   ├── page.tsx   # ホームページ
-│       │   ├── posts/     # 投稿関連ページ
+│       ├── app/            # Next.js App Router（ページレイヤー）
+│       │   ├── layout.tsx   # ルートレイアウト
+│       │   ├── page.tsx    # ホームページ
+│       │   ├── error.tsx   # グローバルエラーハンドリング
+│       │   ├── not-found.tsx # カスタム404ページ
+│       │   ├── posts/      # 投稿関連ページ
 │       │   │   ├── page.tsx        # 投稿一覧
 │       │   │   └── [slug]/         # 投稿詳細（動的ルート）
-│       │   └── login/     # ログインページ
-│       ├── components/    # Reactコンポーネント
-│       │   └── AuthButton.tsx      # 認証ボタン
-│       ├── lib/           # ユーティリティ関数
-│       │   ├── wordpress.ts        # WordPress REST APIクライアント
-│       │   └── auth.ts            # JWT認証ヘルパー
-│       └── package.json   # フロントエンド依存関係
+│       │   └── login/      # ログインページ
+│       │
+│       ├── features/        # 機能別ディレクトリ（Feature-based構造）
+│       │   ├── posts/      # 投稿機能
+│       │   │   ├── lib/    # 投稿関連のロジック
+│       │   │   │   └── wordpress.ts  # WordPress API（posts関連）
+│       │   │   └── types.ts # Post型定義
+│       │   │
+│       │   ├── auth/       # 認証機能
+│       │   │   ├── components/  # 認証関連コンポーネント
+│       │   │   │   └── auth-button.tsx  # 認証ボタン
+│       │   │   ├── lib/    # 認証関連のロジック
+│       │   │   │   └── auth.ts  # JWT認証ヘルパー
+│       │   │   └── types.ts # 認証関連の型定義
+│       │   │
+│       │   └── blocks/     # ブロックレンダリング機能
+│       │       ├── components/  # ブロック関連コンポーネント
+│       │       │   └── block-renderer.tsx  # ブロックレンダラー
+│       │       ├── lib/    # ブロック関連のロジック
+│       │       │   └── blocks.ts  # ブロックパーサー
+│       │       └── types.ts # Block型定義
+│       │
+│       ├── lib/            # 共通ユーティリティ
+│       │   ├── sanitize.ts # HTMLサニタイゼーション（XSS対策）
+│       │   └── wordpress-common.ts  # WordPress共通関数
+│       │
+│       └── package.json    # フロントエンド依存関係
 ├── packages/              # 共有ライブラリ用（将来的に使用）
 │   └── shared/           # 共有型定義・ユーティリティ
 ├── wordpress/            # WordPress 設定とコンテンツ
@@ -124,7 +160,7 @@ pnpm --filter @headless-wp/frontend dev
 ### 投稿の取得
 
 ```typescript
-import { getPosts, getPostBySlug } from "@/lib/wordpress";
+import { getPosts, getPostBySlug } from "@/features/posts/lib/wordpress";
 
 // 投稿一覧を取得
 const posts = await getPosts({ per_page: 10 });
@@ -136,7 +172,7 @@ const post = await getPostBySlug("my-post-slug");
 ### 認証
 
 ```typescript
-import { login, logout, isAuthenticated } from "@/lib/auth";
+import { login, logout, isAuthenticated } from "@/features/auth/lib/auth";
 
 // ログイン
 await login({ username: "admin", password: "password" });
@@ -148,6 +184,17 @@ logout();
 if (isAuthenticated()) {
   // 認証済み
 }
+```
+
+### HTML サニタイゼーション
+
+WordPress から取得した HTML コンテンツを安全に表示するために、`sanitizeHTML`関数を使用します：
+
+```typescript
+import { sanitizeHTML } from "@/lib/sanitize";
+
+// HTMLをサニタイズしてXSS攻撃を防ぐ
+const safeHTML = sanitizeHTML(unsafeHTML);
 ```
 
 ## ビルド
@@ -200,39 +247,16 @@ pnpm --filter @headless-wp/frontend dev
 2. WordPress のパーマリンク設定を更新
 3. `.htaccess`ファイルが正しく設定されているか確認（wp-env では自動設定）
 
-### pnpm の権限エラーが発生する
+### 依存関係のインストールエラー
 
-`EACCES: permission denied` エラーが発生する場合、`.zshrc`（または`.bashrc`）の pnpm 設定が古いユーザーを参照している可能性があります。
+`isomorphic-dompurify`のインストールでエラーが発生する場合：
 
-以下のコマンドで確認：
-
-```bash
-grep PNPM_HOME ~/.zshrc
-```
-
-古いユーザー名が含まれている場合は、以下のように修正してください：
-
-```bash
-# .zshrc を編集
-export PNPM_HOME="$HOME/.local/share/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-```
-
-または、Volta を使用している場合：
-
-```bash
-export PNPM_HOME="$HOME/.volta/bin"
-export PATH="$PNPM_HOME:$PATH"
-```
-
-設定を反映するには、新しいターミナルを開くか、以下を実行：
-
-```bash
-source ~/.zshrc
-```
+1. `pnpm install`を実行して依存関係をインストール
+2. それでもエラーが発生する場合は、`apps/frontend`ディレクトリで直接インストール：
+   ```bash
+   cd apps/frontend
+   pnpm add isomorphic-dompurify
+   ```
 
 ## ライセンス
 

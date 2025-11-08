@@ -1,3 +1,4 @@
+import { sanitizeHTML } from "@/lib/sanitize";
 import { type Block, parseBlocksFromHTML } from "../lib/blocks";
 
 type BlockRendererProps = {
@@ -34,7 +35,7 @@ export function BlockRenderer({ html }: BlockRendererProps) {
             }
             return (
               <div
-                dangerouslySetInnerHTML={{ __html: block }}
+                dangerouslySetInnerHTML={{ __html: sanitizeHTML(block) }}
                 key={`html-${index}-${block.slice(0, 20)}`}
               />
             );
@@ -52,8 +53,10 @@ export function BlockRenderer({ html }: BlockRendererProps) {
     );
   } catch (error) {
     console.error("[BlockRenderer] Error rendering blocks:", error);
-    // エラーが発生した場合は元のHTMLをそのまま表示
-    return <div dangerouslySetInnerHTML={{ __html: html || "" }} />;
+    // エラーが発生した場合はサニタイズして表示
+    return (
+      <div dangerouslySetInnerHTML={{ __html: sanitizeHTML(html || "") }} />
+    );
   }
 }
 

@@ -50,8 +50,15 @@ export async function login(
   });
 
   if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message || "Login failed");
+    let errorMessage = "ログインに失敗しました";
+    try {
+      const error = await res.json();
+      errorMessage = error.message || error.data?.message || errorMessage;
+    } catch {
+      // JSONパースに失敗した場合、ステータステキストを使用
+      errorMessage = `${res.status} ${res.statusText}`;
+    }
+    throw new Error(errorMessage);
   }
 
   const data: LoginResponse = await res.json();
