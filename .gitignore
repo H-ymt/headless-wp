@@ -47,3 +47,6 @@ apps/frontend/next-env.d.ts
 wordpress/.wp-env
 wordpress/.wp-env.json.backup
 
+# turbo
+.turbo
+

@@ -76,4 +76,3 @@ export async function getPostById(id: number): Promise<Post | null> {
 
   return res.json();
 }
-

@@ -9,4 +9,3 @@ export type LoginResponse = {
   user_nicename: string;
   user_display_name: string;
 };
-

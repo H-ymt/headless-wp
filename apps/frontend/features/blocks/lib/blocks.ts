@@ -1,4 +1,4 @@
-import type { Block } from "../types";
+export type { Block } from "../types";
 
 // 正規表現をトップレベルで定義（パフォーマンス向上）
 const SELF_CLOSING_BLOCK_REGEX = /<!--\s*wp:([\w/-]+)(?:\s+({[^}]*}))?\s*\/-->/;
@@ -219,4 +219,3 @@ export function parseBlocksFromHTML(html: string): Array<Block | string> {
 export function cleanWordPressHTML(html: string): string {
   return html.replace(/<!--\s*wp:[\s\S]*?-->/g, "").trim();
 }
-

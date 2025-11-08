@@ -7,7 +7,7 @@ type ErrorProps = {
   reset: () => void;
 };
 
-export default function Error({ error, reset }: ErrorProps) {
+export default function ErrorPage({ error, reset }: ErrorProps) {
   useEffect(() => {
     // エラーをログに記録（本番環境ではエラートラッキングサービスに送信）
     console.error("[ErrorBoundary] Error:", error);
@@ -16,7 +16,7 @@ export default function Error({ error, reset }: ErrorProps) {
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
       <div className="rounded-lg border border-red-200 bg-red-50 p-8">
-        <h1 className="mb-4 text-2xl font-bold text-red-800">
+        <h1 className="mb-4 font-bold text-2xl text-red-800">
           エラーが発生しました
         </h1>
         <p className="mb-6 text-red-700">
@@ -24,10 +24,10 @@ export default function Error({ error, reset }: ErrorProps) {
         </p>
         {process.env.NODE_ENV === "development" && (
           <details className="mb-6">
-            <summary className="mb-2 cursor-pointer text-sm font-semibold text-red-800">
+            <summary className="mb-2 cursor-pointer font-semibold text-red-800 text-sm">
               エラー詳細（開発環境のみ）
             </summary>
-            <pre className="overflow-auto rounded bg-red-100 p-4 text-xs text-red-900">
+            <pre className="overflow-auto rounded bg-red-100 p-4 text-red-900 text-xs">
               {error.message}
               {error.stack && `\n\n${error.stack}`}
             </pre>
@@ -52,4 +52,3 @@ export default function Error({ error, reset }: ErrorProps) {
     </div>
   );
 }
-

@@ -84,4 +84,3 @@ function BlockComponent({ block }: BlockComponentProps) {
       return null;
   }
 }
-

@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { sanitizeHTML } from "@/lib/sanitize";
 import { getPosts } from "@/features/posts/lib/wordpress";
+import { sanitizeHTML } from "@/lib/sanitize";
 
 export const metadata: Metadata = {
   title: "Headless WordPress",
-  description: "WordPressをヘッドレスCMSとして使用し、Next.jsで構築されたWebサイトです。",
+  description:
+    "WordPressをヘッドレスCMSとして使用し、Next.jsで構築されたWebサイトです。",
 };
 
 export default async function Home() {
@@ -58,7 +59,7 @@ export default async function Home() {
                       __html: sanitizeHTML(post.excerpt.rendered),
                     }}
                   />
-                  <div className="text-gray-400 text-sm">
+                  <div className="text-gray-500 text-sm">
                     <time dateTime={post.date}>
                       {new Date(post.date).toLocaleDateString("ja-JP")}
                     </time>

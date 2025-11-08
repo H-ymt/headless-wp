@@ -10,8 +10,6 @@ WordPress をヘッドレス CMS として使用し、Next.js 16 で構築され
 - **Tailwind CSS v4**: 設定ファイルなしのモダンなスタイリング
 - **JWT 認証**: WordPress REST API との認証機能
 - **XSS 対策**: DOMPurify による HTML サニタイゼーション
-- **画像最適化**: Next.js Image コンポーネントによる自動最適化
-- **エラーハンドリング**: グローバルエラーハンドリングとカスタム 404 ページ
 
 ## セットアップ
 

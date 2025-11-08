@@ -70,7 +70,7 @@ export default function LoginPage() {
           {loading ? "ログイン中..." : "ログイン"}
         </button>
       </form>
-      <div className="mt-8 text-gray-400 text-sm">
+      <div className="mt-8 text-gray-500 text-sm">
         <p className="mb-2">デフォルトのWordPressユーザー情報:</p>
         <ul className="space-y-1">
           <li>ユーザー名: admin</li>

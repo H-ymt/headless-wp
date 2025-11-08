@@ -3,4 +3,3 @@ export type Block = {
   attributes: Record<string, unknown>;
   innerHTML?: string;
 };
-

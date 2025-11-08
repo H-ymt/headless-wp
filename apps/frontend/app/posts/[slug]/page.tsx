@@ -31,8 +31,7 @@ export async function generateMetadata({
     };
   }
 
-  const featuredImage =
-    post._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
+  const featuredImage = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
 
   return {
     title: `${post.title.rendered} | Headless WordPress`,
@@ -60,8 +59,7 @@ export default async function PostPage({
       notFound();
     }
 
-    const featuredImage =
-      post._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
+    const featuredImage = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
 
     return (
       <article>
@@ -83,7 +81,7 @@ export default async function PostPage({
           </div>
         )}
         <h1 className="mb-4 text-3xl">{post.title.rendered}</h1>
-        <div className="mb-8 text-gray-400 text-sm">
+        <div className="mb-8 text-gray-500 text-sm">
           <time dateTime={post.date}>
             {new Date(post.date).toLocaleDateString("ja-JP")}
           </time>

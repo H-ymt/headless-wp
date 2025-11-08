@@ -49,7 +49,7 @@ export default async function PostsPage() {
                     __html: sanitizeHTML(post.excerpt.rendered),
                   }}
                 />
-                <div className="text-gray-400 text-sm">
+                <div className="text-gray-500 text-sm">
                   <time dateTime={post.date}>
                     {new Date(post.date).toLocaleDateString("ja-JP")}
                   </time>

@@ -95,4 +95,3 @@ export function getAuthHeaders(): HeadersInit {
 
   return headers;
 }
-

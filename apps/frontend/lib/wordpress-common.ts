@@ -25,4 +25,3 @@ export async function getCurrentUser(token: string): Promise<User | null> {
 
   return res.json();
 }
-
