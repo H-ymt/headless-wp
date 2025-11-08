@@ -5,7 +5,7 @@ const WP_JWT_URL =
   "http://localhost:8888/wp-json/jwt-auth/v1";
 const TOKEN_KEY = "wp_jwt_token";
 
-import type { LoginCredentials, LoginResponse } from "../types";
+import type { LoginCredentials, LoginResponse } from "@/features/auth/types";
 
 /**
  * JWTトークンをローカルストレージに保存

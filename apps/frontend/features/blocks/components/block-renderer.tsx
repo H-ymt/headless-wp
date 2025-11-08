@@ -1,5 +1,5 @@
 import { sanitizeHTML } from "@/lib/sanitize";
-import { type Block, parseBlocksFromHTML } from "../lib/blocks";
+import { type Block, parseBlocksFromHTML } from "@/features/blocks/lib/blocks";
 
 type BlockRendererProps = {
   html: string;

@@ -1,4 +1,4 @@
-export type { Block } from "../types";
+export type { Block } from "@/features/blocks/types";
 
 // 正規表現をトップレベルで定義（パフォーマンス向上）
 const SELF_CLOSING_BLOCK_REGEX = /<!--\s*wp:([\w/-]+)(?:\s+({[^}]*}))?\s*\/-->/;
