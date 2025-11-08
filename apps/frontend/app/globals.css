@@ -1,9 +1,8 @@
 @import "tailwindcss";
-@import "./styles/wordpress-blocks.css";
+@import "../../packages/shared/styles/wordpress-blocks.css";
 
 :root {
-  --font-base:
-    Arial, Hiragino Kaku Gothic ProN, Hiragino Sans, Noto Sans JP, Microsoft YaHei, sans-serif, Segoe UI Emoji, Segoe UI Symbol;
+  --font-base: Arial, Hiragino Kaku Gothic ProN, Hiragino Sans, Noto Sans JP, Microsoft YaHei, sans-serif, Segoe UI Emoji, Segoe UI Symbol;
 }
 
 @theme {
