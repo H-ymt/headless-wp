@@ -1,0 +1,10 @@
+{
+  "name": "wordpress",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "wp-env start",
+    "stop": "wp-env stop",
+    "info": "wp-env info"
+  }
+}

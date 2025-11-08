@@ -1,0 +1,49 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# next.js
+.next/
+/out/
+apps/frontend/.next/
+apps/frontend/out/
+
+# production
+/build
+apps/frontend/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env*.local
+.env
+apps/frontend/.env*.local
+apps/frontend/.env
+
+# vercel
+.vercel
+apps/frontend/.vercel
+
+# typescript
+*.tsbuildinfo
+apps/frontend/next-env.d.ts
+
+# wp-env
+.wp-env
+.wp-env.json.backup
+wordpress/.wp-env
+wordpress/.wp-env.json.backup
+
