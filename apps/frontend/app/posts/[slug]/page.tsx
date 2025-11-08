@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { BlockRenderer } from "@/components/block-renderer";
-import { getPostBySlug, getPosts } from "@/lib/wordpress";
+import { BlockRenderer } from "@/features/blocks/components/block-renderer";
+import { getPostBySlug, getPosts } from "@/features/posts/lib/wordpress";
 
 export async function generateStaticParams() {
   try {

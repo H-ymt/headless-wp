@@ -1,4 +1,4 @@
-import { type Block, parseBlocksFromHTML } from "@/lib/blocks";
+import { type Block, parseBlocksFromHTML } from "../lib/blocks";
 
 type BlockRendererProps = {
   html: string;
@@ -81,3 +81,4 @@ function BlockComponent({ block }: BlockComponentProps) {
       return null;
   }
 }
+

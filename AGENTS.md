@@ -84,21 +84,44 @@ pnpm run dev
 
 ### ディレクトリ構造とレイヤー
 
+このプロジェクトは **feature-based 構造** を採用しています。機能ごとにコードが集約され、関連するコードが近くに配置されます。
+
 ```
 apps/
 └── frontend/            # Next.js アプリケーション
     ├── app/             # Next.js App Router（ページレイヤー）
     │   ├── layout.tsx   # ルートレイアウト
     │   ├── page.tsx     # ホームページ
-    │   ├── posts/       # 投稿関連
+    │   ├── posts/       # 投稿関連ページ
     │   │   ├── page.tsx # 投稿一覧ページ
     │   │   └── [slug]/  # 動的ルート（投稿詳細）
     │   └── login/       # ログインページ
-    ├── components/      # UI コンポーネント
-    │   └── AuthButton.tsx # 認証状態に応じたボタン
-    └── lib/             # ビジネスロジックとデータアクセス層
-        ├── wordpress.ts # WordPress REST API クライアント
-        └── auth.ts      # JWT 認証ヘルパー（クライアントサイド）
+    │
+    ├── features/        # 機能別ディレクトリ（Feature-based構造）
+    │   ├── posts/       # 投稿機能
+    │   │   ├── components/  # 投稿関連コンポーネント
+    │   │   ├── lib/         # 投稿関連のロジック
+    │   │   │   └── wordpress.ts  # WordPress API（posts関連）
+    │   │   └── types.ts     # Post型定義
+    │   │
+    │   ├── auth/        # 認証機能
+    │   │   ├── components/  # 認証関連コンポーネント
+    │   │   │   └── auth-button.tsx  # 認証ボタン
+    │   │   ├── lib/         # 認証関連のロジック
+    │   │   │   └── auth.ts  # JWT認証ヘルパー
+    │   │   └── types.ts     # 認証関連の型定義
+    │   │
+    │   └── blocks/      # ブロックレンダリング機能
+    │       ├── components/  # ブロック関連コンポーネント
+    │       │   └── block-renderer.tsx  # ブロックレンダラー
+    │       ├── lib/         # ブロック関連のロジック
+    │       │   └── blocks.ts  # ブロックパーサー
+    │       └── types.ts     # Block型定義
+    │
+    ├── components/      # 共通UIコンポーネント（将来的に追加）
+    │
+    └── lib/             # 共通ユーティリティ
+        └── wordpress-common.ts  # WordPress共通関数（getCurrentUserなど）
 
 wordpress/               # WordPress 設定とコンテンツ
 ├── .wp-env.json         # wp-env 設定
@@ -107,22 +130,23 @@ wordpress/               # WordPress 設定とコンテンツ
 
 ### データフロー
 
-1. **投稿の取得**: `lib/wordpress.ts` の関数を使用して WordPress REST API からデータを取得
-2. **認証**: `lib/auth.ts` の関数を使用して JWT トークンを管理
+1. **投稿の取得**: `features/posts/lib/wordpress.ts` の関数を使用して WordPress REST API からデータを取得
+2. **認証**: `features/auth/lib/auth.ts` の関数を使用して JWT トークンを管理
 3. **画像**: `next.config.js` で WordPress の画像ドメイン（localhost:8888）を許可
 
 ### 重要な設計パターン
 
 #### WordPress REST API との通信
 
-- `apps/frontend/lib/wordpress.ts` にすべての API 呼び出しロジックを集約
+- `features/posts/lib/wordpress.ts` に投稿関連の API 呼び出しロジックを集約
+- `lib/wordpress-common.ts` に共通の WordPress API 関数を配置（`getCurrentUser` など）
 - 環境変数 `NEXT_PUBLIC_WP_URL` と `NEXT_PUBLIC_WP_API_URL` で接続先を管理（`apps/frontend/.env.local` に設定）
 - `_embed=true` パラメータでアイキャッチ画像や著者情報を同時取得
 - Next.js の `next.revalidate` で 60 秒キャッシュを設定
 
 #### JWT 認証
 
-- `apps/frontend/lib/auth.ts` はクライアントサイド専用（`'use client'` ディレクティブ）
+- `features/auth/lib/auth.ts` はクライアントサイド専用（`'use client'` ディレクティブ）
 - トークンは localStorage に保存（`wp_jwt_token` キー）
 - `getAuthHeaders()` で Authorization ヘッダーを生成
 - WordPress の JWT プラグイン（jwt-authentication-for-wp-rest-api）を使用
@@ -151,7 +175,13 @@ JWT 認証が動作しない場合、WordPress 管理画面でパーマリンク
 
 ### 型定義
 
-WordPress REST API のレスポンス型は `apps/frontend/lib/wordpress.ts` で定義されています。新しいエンドポイントを追加する場合は、対応する型定義も追加してください。
+WordPress REST API のレスポンス型は各機能の `types.ts` ファイルで定義されています：
+
+- 投稿関連: `features/posts/types.ts`
+- 認証関連: `features/auth/types.ts`
+- ブロック関連: `features/blocks/types.ts`
+
+新しいエンドポイントを追加する場合は、対応する機能の `types.ts` に型定義を追加してください。
 
 ### 画像の最適化
 
@@ -160,8 +190,27 @@ Next.js の `next/image` コンポーネントを使用する場合、`apps/fron
 ### モノレポ構造
 
 このプロジェクトは pnpm workspaces を使用したモノレポ構造です：
+
 - `apps/frontend/`: Next.js アプリケーション
 - `wordpress/`: WordPress 設定とコンテンツ
 - `packages/`: 共有ライブラリ用（将来的に使用）
 
 ルートから各パッケージのコマンドを実行する場合は `pnpm --filter <package-name> <command>` を使用します。
+
+## 設計作業ルール
+
+設計作業を依頼された場合は、以下のルールに従ってファイルを作成すること：
+
+- ファイル名: `YYYYMMDD_HHMM_{日本語の作業内容}.md`
+- 保存場所: `docs/` 以下
+- フォーマット: Markdown
+
+例: `docs/20250815_1430_ユーザー認証システム設計.md`
+
+## GitHub 操作ルール
+
+- ユーザーから PR を出して、と言われたときは、現在の作業のフィーチャーブランチを切りコミットを行ってから PR を出すようにする
+- ユーザーから commit して、と言われたときは、必ず `git status`や`git diff`を行い、変更内容を確認してから conventional commit 形式でコミットメッセージを作成し、コミットを行うようにする
+- 重要: ユーザーから明示的な指示があるまでコミットしないこと
+- develop や main への直接 push は禁止です
+- PR 作成時は `gh pr create` コマンドに `--base` オプションを付けず、デフォルトのベースブランチを使用してください

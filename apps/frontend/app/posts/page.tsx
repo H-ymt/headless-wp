@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { getPosts } from "@/lib/wordpress";
-import { cleanWordPressHTML } from "@/lib/blocks";
+import { cleanWordPressHTML } from "@/features/blocks/lib/blocks";
+import { getPosts } from "@/features/posts/lib/wordpress";
 
 export default async function PostsPage() {
   const posts = await getPosts({ per_page: 10 });

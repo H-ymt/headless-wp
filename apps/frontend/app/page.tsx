@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getPosts } from "@/lib/wordpress";
+import { getPosts } from "@/features/posts/lib/wordpress";
 
 export default async function Home() {
   const posts = await getPosts({ per_page: 3 });

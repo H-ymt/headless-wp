@@ -1,42 +1,8 @@
-const WP_URL = process.env.NEXT_PUBLIC_WP_URL || "http://localhost:8888";
+import type { Post } from "../types";
+
 const WP_API_URL =
-  process.env.NEXT_PUBLIC_WP_API_URL || `${WP_URL}/wp-json/wp/v2`;
-
-export type Post = {
-  id: number;
-  date: string;
-  modified: string;
-  slug: string;
-  status: string;
-  title: {
-    rendered: string;
-  };
-  content: {
-    rendered: string;
-  };
-  excerpt: {
-    rendered: string;
-  };
-  author: number;
-  featured_media: number;
-  _embedded?: {
-    "wp:featuredmedia"?: Array<{
-      source_url: string;
-      alt_text: string;
-    }>;
-    author?: Array<{
-      name: string;
-      slug: string;
-    }>;
-  };
-};
-
-export type User = {
-  id: number;
-  name: string;
-  slug: string;
-  email: string;
-};
+  process.env.NEXT_PUBLIC_WP_API_URL ||
+  `${process.env.NEXT_PUBLIC_WP_URL || "http://localhost:8888"}/wp-json/wp/v2`;
 
 /**
  * WordPress REST APIから投稿一覧を取得
@@ -111,21 +77,3 @@ export async function getPostById(id: number): Promise<Post | null> {
   return res.json();
 }
 
-/**
- * WordPress REST APIから現在のユーザー情報を取得
- */
-export async function getCurrentUser(token: string): Promise<User | null> {
-  const url = `${WP_URL}/wp-json/wp/v2/users/me`;
-
-  const res = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!res.ok) {
-    return null;
-  }
-
-  return res.json();
-}

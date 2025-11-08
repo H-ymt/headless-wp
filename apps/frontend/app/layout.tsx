@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Link from "next/link";
-import AuthButton from "@/components/auth-button";
 
 export const metadata: Metadata = {
   title: "Headless WordPress",
@@ -15,7 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <body className="min-h-screen bg-white">
+      <body>
         <header className="border-b">
           <div className="mx-auto max-w-4xl px-6">
             <div className="flex items-center justify-between py-4">
@@ -25,7 +24,6 @@ export default function RootLayout({
               <nav className="flex items-center gap-6">
                 <Link href="/">ホーム</Link>
                 <Link href="/posts">投稿</Link>
-                <AuthButton />
               </nav>
             </div>
           </div>

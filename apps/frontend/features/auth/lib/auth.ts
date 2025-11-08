@@ -5,17 +5,7 @@ const WP_JWT_URL =
   "http://localhost:8888/wp-json/jwt-auth/v1";
 const TOKEN_KEY = "wp_jwt_token";
 
-export type LoginCredentials = {
-  username: string;
-  password: string;
-};
-
-export type LoginResponse = {
-  token: string;
-  user_email: string;
-  user_nicename: string;
-  user_display_name: string;
-};
+import type { LoginCredentials, LoginResponse } from "../types";
 
 /**
  * JWTトークンをローカルストレージに保存
@@ -98,3 +88,4 @@ export function getAuthHeaders(): HeadersInit {
 
   return headers;
 }
+
