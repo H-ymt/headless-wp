@@ -64,7 +64,9 @@ export default async function PostPage({
     return (
       <article>
         <div className="mb-8">
-          <Link href="/posts">← 投稿一覧に戻る</Link>
+          <Link className="flex items-center gap-2" href="/posts">
+            ←<span className="pt-0.5">投稿一覧に戻る</span>
+          </Link>
         </div>
         {featuredImage && (
           <div className="mb-8 aspect-video w-full overflow-hidden rounded">

@@ -43,8 +43,12 @@ export default function RootLayout({
                 aria-label="メインナビゲーション"
                 className="flex items-center gap-6"
               >
-                <Link href="/">ホーム</Link>
-                <Link href="/posts">投稿</Link>
+                <Link className="font-medium text-sm" href="/">
+                  ホーム
+                </Link>
+                <Link className="font-medium text-sm" href="/posts">
+                  投稿
+                </Link>
               </nav>
             </div>
           </div>
