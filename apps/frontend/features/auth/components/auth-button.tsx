@@ -2,8 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getCurrentUser } from "@/lib/wordpress-common";
 import { getToken, isAuthenticated, logout } from "@/features/auth/lib/auth";
+import { getCurrentUser } from "@/lib/wordpress-common";
 
 export default function AuthButton() {
   const router = useRouter();
