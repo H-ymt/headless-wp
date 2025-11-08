@@ -31,11 +31,7 @@ export default function LoginPage() {
     <div className="mx-auto max-w-md">
       <h1 className="mb-8 text-3xl">ログイン</h1>
       <form onSubmit={handleSubmit}>
-        {error && (
-          <div className="mb-4 text-red-600">
-            {error}
-          </div>
-        )}
+        {error && <div className="mb-4 text-red-600">{error}</div>}
         <div className="mb-4">
           <label className="mb-2 block text-sm" htmlFor="username">
             ユーザー名
@@ -70,7 +66,7 @@ export default function LoginPage() {
           {loading ? "ログイン中..." : "ログイン"}
         </button>
       </form>
-      <div className="mt-8 text-sm text-gray-400">
+      <div className="mt-8 text-gray-400 text-sm">
         <p className="mb-2">デフォルトのWordPressユーザー情報:</p>
         <ul className="space-y-1">
           <li>ユーザー名: admin</li>

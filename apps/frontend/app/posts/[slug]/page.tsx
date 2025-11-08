@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { cleanWordPressHTML, getPostBySlug, getPosts } from "@/lib/wordpress";
+import { BlockRenderer } from "@/components/block-renderer";
+import { getPostBySlug, getPosts } from "@/lib/wordpress";
 
 export async function generateStaticParams() {
   try {
@@ -19,32 +20,32 @@ export default async function PostPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const { slug } = await params;
-  const post = await getPostBySlug(slug);
+  try {
+    const { slug } = await params;
+    const post = await getPostBySlug(slug);
 
-  if (!post) {
-    notFound();
+    if (!post) {
+      notFound();
+    }
+
+    return (
+      <article>
+        <div className="mb-8">
+          <Link href="/posts">← 投稿一覧に戻る</Link>
+        </div>
+        <h1 className="mb-4 text-3xl">{post.title.rendered}</h1>
+        <div className="mb-8 text-gray-400 text-sm">
+          <time dateTime={post.date}>
+            {new Date(post.date).toLocaleDateString("ja-JP")}
+          </time>
+        </div>
+        <div className="prose max-w-none">
+          <BlockRenderer html={post.content.rendered || ""} />
+        </div>
+      </article>
+    );
+  } catch (error) {
+    console.error("[PostPage] Error rendering post:", error);
+    throw error;
   }
-
-  return (
-    <article>
-      <div className="mb-8">
-        <Link href="/posts">← 投稿一覧に戻る</Link>
-      </div>
-      <h1 className="mb-4 text-3xl">
-        {post.title.rendered}
-      </h1>
-      <div className="mb-8 text-sm text-gray-400">
-        <time dateTime={post.date}>
-          {new Date(post.date).toLocaleDateString("ja-JP")}
-        </time>
-      </div>
-      <div
-        className="prose max-w-none"
-        dangerouslySetInnerHTML={{
-          __html: cleanWordPressHTML(post.content.rendered),
-        }}
-      />
-    </article>
-  );
 }

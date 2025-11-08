@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { cleanWordPressHTML, getPosts } from "@/lib/wordpress";
+import { getPosts } from "@/lib/wordpress";
+import { cleanWordPressHTML } from "@/lib/blocks";
 
 export default async function PostsPage() {
   const posts = await getPosts({ per_page: 10 });
@@ -14,9 +15,7 @@ export default async function PostsPage() {
           {posts.map((post) => (
             <article key={post.id}>
               <h2 className="mb-2 text-xl">
-                <Link href={`/posts/${post.slug}`}>
-                  {post.title.rendered}
-                </Link>
+                <Link href={`/posts/${post.slug}`}>{post.title.rendered}</Link>
               </h2>
               <div
                 className="mb-4 text-gray-600"
@@ -24,7 +23,7 @@ export default async function PostsPage() {
                   __html: cleanWordPressHTML(post.excerpt.rendered),
                 }}
               />
-              <div className="text-sm text-gray-400">
+              <div className="text-gray-400 text-sm">
                 <time dateTime={post.date}>
                   {new Date(post.date).toLocaleDateString("ja-JP")}
                 </time>

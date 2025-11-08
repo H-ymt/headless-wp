@@ -39,17 +39,6 @@ export type User = {
 };
 
 /**
- * WordPressのGutenbergブロックコメントをHTMLから削除
- */
-export function cleanWordPressHTML(html: string): string {
-  // WordPressブロックコメントを削除
-  // 例: <!-- wp:iapa/course-schedule {"courseSlug":"coordinator"} /-->
-  // 例: <!-- wp:paragraph -->
-  // 例: <!-- /wp:paragraph -->
-  return html.replace(/<!--\s*wp:[\s\S]*?-->/g, "").trim();
-}
-
-/**
  * WordPress REST APIから投稿一覧を取得
  */
 export async function getPosts(params?: {
@@ -76,7 +65,10 @@ export async function getPosts(params?: {
   });
 
   if (!res.ok) {
-    throw new Error("Failed to fetch posts");
+    const errorText = await res.text().catch(() => "Unknown error");
+    throw new Error(
+      `Failed to fetch posts: ${res.status} ${res.statusText}. URL: ${url}. Error: ${errorText.slice(0, 200)}`
+    );
   }
 
   return res.json();

@@ -1,5 +1,5 @@
 {
-  "core": "WordPress/WordPress",
+  "core": "https://ja.wordpress.org/latest-ja.zip",
   "phpVersion": "8.3",
   "plugins": [
     "https://downloads.wordpress.org/plugin/jwt-authentication-for-wp-rest-api.latest-stable.zip"

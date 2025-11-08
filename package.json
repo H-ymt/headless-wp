@@ -5,7 +5,8 @@
   "private": true,
   "packageManager": "pnpm@9.0.0",
   "scripts": {
-    "dev": "concurrently -k \"pnpm --filter wordpress start\" \"wait-on http://localhost:8888 && pnpm --filter @headless-wp/frontend dev\"",
+    "dev": "pnpm wp:start && wait-on http://localhost:8888 && pnpm --filter @headless-wp/frontend dev",
+    "dev:next": "pnpm --filter @headless-wp/frontend dev",
     "build": "pnpm --filter @headless-wp/frontend build",
     "start": "pnpm --filter @headless-wp/frontend start",
     "format": "ultracite fix",
