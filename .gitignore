@@ -50,3 +50,6 @@ wordpress/.wp-env.json.backup
 # turbo
 .turbo
 
+# claude
+.claude/settings.local.json
+
