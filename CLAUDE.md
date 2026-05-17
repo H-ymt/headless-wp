@@ -25,7 +25,7 @@ pnpm run wp:start
 pnpm --filter @headless-wp/frontend dev
 ```
 
-`pnpm run dev` は concurrently を使用して WordPress の起動を待ってから Next.js を自動起動します。
+`pnpm run dev` は `wait-on` で WordPress の起動を待ってから Next.js を自動起動します。
 
 ### WordPress 環境管理
 
@@ -62,15 +62,7 @@ pnpm install
 # 2. 環境変数の設定
 cp apps/frontend/.env.local.example apps/frontend/.env.local
 
-# 3. WordPress 環境起動
-npx wp-env start
-
-# 4. WordPress 管理画面で JWT プラグインを有効化
-# http://localhost:8888/wp-admin (admin/password)
-# プラグイン → 「JWT Authentication for WP REST API」を有効化
-# 設定 → パーマリンク設定 → 「変更を保存」をクリック
-
-# 5. 開発サーバー起動
+# 3. 開発サーバー起動（WordPress 起動 + JWT プラグイン有効化 + パーマリンク設定 + Next.js 起動を自動実行）
 pnpm run dev
 ```
 
@@ -155,7 +147,7 @@ wordpress/               # WordPress 設定とコンテンツ
 
 - `wordpress/.wp-env.json` で環境を定義
 - PHP 8.3、WordPress 最新版
-- JWT プラグインは自動インストール（ただし手動で有効化が必要）
+- JWT プラグインは自動インストール・有効化（`afterStart` フックで自動実行）
 - デバッグモード有効（`WP_DEBUG: true`）
 - `wordpress/wp-content/plugins` と `wordpress/wp-content/themes` をローカルディレクトリにマッピング
 
@@ -171,7 +163,7 @@ wordpress/               # WordPress 設定とコンテンツ
 
 ### パーマリンク設定
 
-JWT 認証が動作しない場合、WordPress 管理画面でパーマリンク設定を一度保存し直してください（`.htaccess` の更新が必要なため）。
+パーマリンク設定と JWT プラグインの有効化は `pnpm run dev` 時の `afterStart` フックで自動実行されます。手動で再実行する場合は `pnpm run wp:setup` を使用してください。
 
 ### 型定義
 
