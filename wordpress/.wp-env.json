@@ -15,5 +15,10 @@
   "mappings": {
     "wp-content/plugins": "./wp-content/plugins",
     "wp-content/themes": "./wp-content/themes"
-  }
+  },
+  "afterStart": [
+    "wp plugin activate jwt-authentication-for-wp-rest-api || true",
+    "wp rewrite structure '/%postname%/' --hard",
+    "wp rewrite flush --hard"
+  ]
 }
