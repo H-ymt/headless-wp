@@ -1,7 +1,6 @@
 packages:
   - 'apps/*'
   - 'packages/*'
-  - 'wordpress'
 allowBuilds:
   lefthook: true
   sharp: true

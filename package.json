@@ -17,7 +17,7 @@
     "wp:start": "pnpm --filter wordpress start",
     "wp:stop": "pnpm --filter wordpress stop",
     "wp:info": "pnpm --filter wordpress info",
-    "wp:setup": "npx wp-env run cli wp plugin activate jwt-authentication-for-wp-rest-api || true && npx wp-env run cli wp rewrite structure '/%postname%/' --hard && npx wp-env run cli wp rewrite flush --hard"
+    "wp:setup": "cd apps/wordpress && npx wp-env run cli wp plugin activate jwt-authentication-for-wp-rest-api || true && npx wp-env run cli wp rewrite structure '/%postname%/' --hard && npx wp-env run cli wp rewrite flush --hard"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.4",
