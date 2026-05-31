@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { draftMode } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -26,9 +27,7 @@ export async function generateMetadata({
   const post = await getPostBySlug(slug);
 
   if (!post) {
-    return {
-      title: "投稿が見つかりません",
-    };
+    return { title: "投稿が見つかりません" };
   }
 
   const featuredImage = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
@@ -39,9 +38,7 @@ export async function generateMetadata({
       ? post.excerpt.rendered.replace(/<[^>]*>/g, "").slice(0, 160)
       : "WordPressの投稿ページです。",
     ...(featuredImage && {
-      openGraph: {
-        images: [featuredImage],
-      },
+      openGraph: { images: [featuredImage] },
     }),
   };
 }
@@ -51,50 +48,60 @@ export default async function PostPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  try {
-    const { slug } = await params;
-    const post = await getPostBySlug(slug);
+  const { slug } = await params;
+  const { isEnabled: isPreview } = await draftMode();
 
-    if (!post) {
-      notFound();
-    }
+  const post = await getPostBySlug(
+    slug,
+    isPreview ? { status: "draft" } : undefined
+  );
 
-    const featuredImage = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
+  if (!post) {
+    notFound();
+  }
 
-    return (
-      <article>
-        <div className="mb-8">
-          <Link className="flex items-center gap-2" href="/posts">
-            ←<span className="pt-0.5">投稿一覧に戻る</span>
+  const featuredImage = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
+  const authorName = post._embedded?.author?.[0]?.name;
+
+  return (
+    <article>
+      {isPreview && (
+        <div className="mb-4 flex items-center justify-between rounded bg-yellow-100 px-4 py-2 text-sm text-yellow-800">
+          <span>プレビューモードで表示中（下書き）</span>
+          <Link className="underline" href="/api/draft-disable">
+            プレビューを終了
           </Link>
         </div>
-        {featuredImage && (
-          <div className="mb-8 aspect-video w-full overflow-hidden rounded">
-            <Image
-              alt={
-                post._embedded?.["wp:featuredmedia"]?.[0]?.alt_text ||
-                post.title.rendered
-              }
-              className="h-full w-full object-cover"
-              height={600}
-              src={featuredImage}
-              width={1200}
-            />
-          </div>
-        )}
-        <h1 className="mb-4 text-3xl">{post.title.rendered}</h1>
-        <div className="mb-8 text-gray-500 text-sm">
-          <time dateTime={post.date}>
-            {new Date(post.date).toLocaleDateString("ja-JP")}
-          </time>
+      )}
+      <div className="mb-8">
+        <Link className="flex items-center gap-2" href="/posts">
+          ←<span className="pt-0.5">投稿一覧に戻る</span>
+        </Link>
+      </div>
+      {featuredImage && (
+        <div className="mb-8 aspect-video w-full overflow-hidden rounded">
+          <Image
+            alt={
+              post._embedded?.["wp:featuredmedia"]?.[0]?.alt_text ||
+              post.title.rendered
+            }
+            className="h-full w-full object-cover"
+            height={600}
+            src={featuredImage}
+            width={1200}
+          />
         </div>
-        <div className="prose max-w-none">
-          <BlockRenderer html={post.content.rendered || ""} />
-        </div>
-      </article>
-    );
-  } catch (error) {
-    console.error("[PostPage] Error rendering post:", error);
-    throw error;
-  }
+      )}
+      <h1 className="mb-4 text-3xl">{post.title.rendered}</h1>
+      <div className="mb-8 flex items-center gap-4 text-gray-500 text-sm">
+        <time dateTime={post.date}>
+          {new Date(post.date).toLocaleDateString("ja-JP")}
+        </time>
+        {authorName && <span>{authorName}</span>}
+      </div>
+      <div className="prose max-w-none">
+        <BlockRenderer html={post.content.rendered || ""} />
+      </div>
+    </article>
+  );
 }

@@ -1,14 +1,16 @@
 {
   "core": "https://ja.wordpress.org/latest-ja.zip",
   "phpVersion": "8.3",
-  "plugins": [],
+  "plugins": ["./wp-content/plugins/headless-preview"],
   "themes": [],
   "port": 8888,
   "testsPort": 8889,
   "config": {
     "WP_DEBUG": true,
     "WP_DEBUG_LOG": true,
-    "SCRIPT_DEBUG": true
+    "SCRIPT_DEBUG": true,
+    "HEADLESS_FRONTEND_URL": "http://localhost:3000",
+    "PREVIEW_SECRET": "your-preview-secret-here"
   },
   "mappings": {
     "wp-content/plugins": "./wp-content/plugins",
