@@ -1,47 +1,71 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { Suspense } from "react";
-import { SearchForm } from "@/features/posts/components/search-form";
-import { getPostsWithPagination } from "@/features/posts/lib/wordpress";
+import { notFound } from "next/navigation";
+import {
+  getCategories,
+  getCategoryBySlug,
+  getPostsByCategory,
+} from "@/features/categories/lib/wordpress";
 import { sanitizeHTML } from "@/lib/sanitize";
 
-export const metadata: Metadata = {
-  title: "投稿一覧",
-  description: "WordPressの投稿一覧ページです。",
-};
+export async function generateStaticParams() {
+  try {
+    const categories = await getCategories();
+    return categories.map((c) => ({ slug: c.slug }));
+  } catch {
+    return [];
+  }
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const category = await getCategoryBySlug(slug);
+
+  if (!category) {
+    return { title: "カテゴリーが見つかりません" };
+  }
+
+  return {
+    title: category.name,
+    description: category.description || `${category.name}の投稿一覧です。`,
+  };
+}
 
 const PER_PAGE = 10;
 
 type Props = {
-  searchParams: Promise<{ page?: string; search?: string }>;
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ page?: string }>;
 };
 
-export default async function PostsPage({ searchParams }: Props) {
-  const { page: pageParam, search } = await searchParams;
+export default async function CategoryPage({ params, searchParams }: Props) {
+  const { slug } = await params;
+  const { page: pageParam } = await searchParams;
   const currentPage = Math.max(1, Number(pageParam ?? 1));
 
-  const { posts, totalPages } = await getPostsWithPagination({
+  const category = await getCategoryBySlug(slug);
+  if (!category) {
+    notFound();
+  }
+
+  const { posts, totalPages } = await getPostsByCategory(category.id, {
     per_page: PER_PAGE,
     page: currentPage,
-    search,
   });
-
-  const paginationHref = (page: number) => {
-    const params = new URLSearchParams();
-    params.set("page", page.toString());
-    if (search) {
-      params.set("search", search);
-    }
-    return `/posts?${params.toString()}`;
-  };
 
   return (
     <div>
-      <h1 className="mb-8 text-3xl">投稿一覧</h1>
-      <Suspense>
-        <SearchForm defaultValue={search} />
-      </Suspense>
+      <div className="mb-8">
+        <Link className="flex items-center gap-2" href="/categories">
+          ←<span className="pt-0.5">カテゴリー一覧に戻る</span>
+        </Link>
+      </div>
+      <h1 className="mb-12 text-3xl">{category.name}</h1>
       {posts.length === 0 ? (
         <p>投稿がありません。</p>
       ) : (
@@ -98,7 +122,7 @@ export default async function PostsPage({ searchParams }: Props) {
               {currentPage > 1 && (
                 <Link
                   className="rounded border px-4 py-2 hover:bg-gray-100"
-                  href={paginationHref(currentPage - 1)}
+                  href={`/categories/${slug}?page=${currentPage - 1}`}
                 >
                   前へ
                 </Link>
@@ -112,7 +136,7 @@ export default async function PostsPage({ searchParams }: Props) {
                         ? "bg-gray-900 text-white"
                         : "hover:bg-gray-100"
                     }`}
-                    href={paginationHref(page)}
+                    href={`/categories/${slug}?page=${page}`}
                     key={page}
                   >
                     {page}
@@ -122,7 +146,7 @@ export default async function PostsPage({ searchParams }: Props) {
               {currentPage < totalPages && (
                 <Link
                   className="rounded border px-4 py-2 hover:bg-gray-100"
-                  href={paginationHref(currentPage + 1)}
+                  href={`/categories/${slug}?page=${currentPage + 1}`}
                 >
                   次へ
                 </Link>
