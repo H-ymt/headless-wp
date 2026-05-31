@@ -30,8 +30,8 @@ pnpm --filter @headless-wp/frontend dev
 ### WordPress 環境管理
 
 ```bash
-# WordPress 環境の初回起動（wordpress ディレクトリから実行）
-cd wordpress && npx wp-env start
+# WordPress 環境の初回起動（apps/wordpress ディレクトリから実行）
+cd apps/wordpress && npx wp-env start
 
 # WordPress 環境の停止
 pnpm run wp:stop
@@ -115,7 +115,7 @@ apps/
     └── lib/             # 共通ユーティリティ
         └── wordpress-common.ts  # WordPress共通関数（getCurrentUserなど）
 
-wordpress/               # WordPress 設定とコンテンツ
+apps/wordpress/          # WordPress 設定とコンテンツ
 ├── .wp-env.json         # wp-env 設定
 └── wp-content/         # WordPress コンテンツディレクトリ
 ```
@@ -145,11 +145,11 @@ wordpress/               # WordPress 設定とコンテンツ
 
 #### WordPress 環境（wp-env）
 
-- `wordpress/.wp-env.json` で環境を定義
+- `apps/wordpress/.wp-env.json` で環境を定義
 - PHP 8.3、WordPress 最新版
 - JWT プラグインは自動インストール・有効化（`afterStart` フックで自動実行）
 - デバッグモード有効（`WP_DEBUG: true`）
-- `wordpress/wp-content/plugins` と `wordpress/wp-content/themes` をローカルディレクトリにマッピング
+- `apps/wordpress/wp-content/plugins` と `apps/wordpress/wp-content/themes` をローカルディレクトリにマッピング
 
 ## 開発時の注意点
 
@@ -183,7 +183,7 @@ Next.js の `next/image` コンポーネントを使用する場合、`apps/fron
 このプロジェクトは pnpm workspaces を使用したモノレポ構造です：
 
 - `apps/frontend/`: Next.js アプリケーション
-- `wordpress/`: WordPress 設定とコンテンツ
+- `apps/wordpress/`: WordPress 設定とコンテンツ
 - `packages/`: 共有ライブラリ用（将来的に使用）
 
 ルートから各パッケージのコマンドを実行する場合は `pnpm --filter <package-name> <command>` を使用します。

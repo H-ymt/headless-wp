@@ -28,7 +28,7 @@ pnpm install
 ### 2. WordPress 環境の起動
 
 ```bash
-cd wordpress
+cd apps/wordpress
 npx wp-env start
 ```
 
@@ -143,7 +143,7 @@ pnpm --filter @headless-wp/frontend dev
 │       └── package.json    # フロントエンド依存関係
 ├── packages/              # 共有ライブラリ用（将来的に使用）
 │   └── shared/           # 共有型定義・ユーティリティ
-├── wordpress/            # WordPress 設定とコンテンツ
+├── apps/wordpress/       # WordPress 設定とコンテンツ
 │   ├── .wp-env.json      # wp-env設定
 │   ├── wp-content/       # WordPress コンテンツ
 │   │   ├── plugins/
@@ -235,7 +235,7 @@ pnpm --filter @headless-wp/frontend dev
 
 ### WordPress に接続できない
 
-1. wp-env が起動しているか確認: `cd wordpress && npx wp-env info`
+1. wp-env が起動しているか確認: `cd apps/wordpress && npx wp-env info`
 2. `apps/frontend/.env.local`の URL が正しいか確認
 3. WordPress のパーマリンク設定を更新
 

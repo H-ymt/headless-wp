@@ -17,13 +17,13 @@
     "wp:start": "pnpm --filter wordpress start",
     "wp:stop": "pnpm --filter wordpress stop",
     "wp:info": "pnpm --filter wordpress info",
-    "wp:setup": "npx wp-env run cli wp plugin activate jwt-authentication-for-wp-rest-api || true && npx wp-env run cli wp rewrite structure '/%postname%/' --hard && npx wp-env run cli wp rewrite flush --hard"
+    "wp:setup": "cd apps/wordpress && npx wp-env run cli wp plugin activate jwt-authentication-for-wp-rest-api || true && npx wp-env run cli wp rewrite structure '/%postname%/' --hard && npx wp-env run cli wp rewrite flush --hard"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.4",
     "concurrently": "^8.2.2",
-    "lefthook": "^2.0.2",
-    "turbo": "^2.6.0",
+    "lefthook": "^2.1.9",
+    "turbo": "^2.9.16",
     "ultracite": "6.3.2",
     "wait-on": "^7.2.0"
   },
