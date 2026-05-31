@@ -2,7 +2,7 @@
 
 ## プロジェクト概要
 
-このプロジェクトは WordPress をヘッドレス CMS として使用し、Next.js 16 で構築された Web サイトのテンプレートです。WordPress は wp-env（Docker ベース）でローカル環境を構築し、Next.js のフロントエンドから WordPress REST API 経由でコンテンツを取得します。JWT 認証により WordPress への認証機能も実装されています。
+このプロジェクトは WordPress をヘッドレス CMS として使用し、Next.js 16 で構築された Web サイトのテンプレートです。WordPress は wp-env（Docker ベース）でローカル環境を構築し、Next.js のフロントエンドから WordPress REST API 経由でコンテンツを取得します。
 
 ## 必要な環境
 
@@ -62,7 +62,7 @@ pnpm install
 # 2. 環境変数の設定
 cp apps/frontend/.env.local.example apps/frontend/.env.local
 
-# 3. 開発サーバー起動（WordPress 起動 + JWT プラグイン有効化 + パーマリンク設定 + Next.js 起動を自動実行）
+# 3. 開発サーバー起動（WordPress 起動 + パーマリンク設定 + Next.js 起動を自動実行）
 pnpm run dev
 ```
 
@@ -72,7 +72,7 @@ pnpm run dev
 
 - **WordPress（wp-env）**: ポート 8888 でバックエンド API を提供
 - **Next.js 16（App Router）**: ポート 3000 でフロントエンドを提供
-- **通信**: Next.js から WordPress REST API を呼び出し、JWT で認証
+- **通信**: Next.js から WordPress REST API を呼び出してコンテンツを取得
 
 ### ディレクトリ構造とレイヤー
 
@@ -84,10 +84,9 @@ apps/
     ├── app/             # Next.js App Router（ページレイヤー）
     │   ├── layout.tsx   # ルートレイアウト
     │   ├── page.tsx     # ホームページ
-    │   ├── posts/       # 投稿関連ページ
-    │   │   ├── page.tsx # 投稿一覧ページ
-    │   │   └── [slug]/  # 動的ルート（投稿詳細）
-    │   └── login/       # ログインページ
+    │   └── posts/       # 投稿関連ページ
+    │       ├── page.tsx # 投稿一覧ページ
+    │       └── [slug]/  # 動的ルート（投稿詳細）
     │
     ├── features/        # 機能別ディレクトリ（Feature-based構造）
     │   ├── posts/       # 投稿機能
@@ -95,13 +94,6 @@ apps/
     │   │   ├── lib/         # 投稿関連のロジック
     │   │   │   └── wordpress.ts  # WordPress API（posts関連）
     │   │   └── types.ts     # Post型定義
-    │   │
-    │   ├── auth/        # 認証機能
-    │   │   ├── components/  # 認証関連コンポーネント
-    │   │   │   └── auth-button.tsx  # 認証ボタン
-    │   │   ├── lib/         # 認証関連のロジック
-    │   │   │   └── auth.ts  # JWT認証ヘルパー
-    │   │   └── types.ts     # 認証関連の型定義
     │   │
     │   └── blocks/      # ブロックレンダリング機能
     │       ├── components/  # ブロック関連コンポーネント
@@ -113,7 +105,7 @@ apps/
     ├── components/      # 共通UIコンポーネント（将来的に追加）
     │
     └── lib/             # 共通ユーティリティ
-        └── wordpress-common.ts  # WordPress共通関数（getCurrentUserなど）
+        └── sanitize.ts  # サニタイズ等の共通関数
 
 apps/wordpress/          # WordPress 設定とコンテンツ
 ├── .wp-env.json         # wp-env 設定
@@ -123,31 +115,21 @@ apps/wordpress/          # WordPress 設定とコンテンツ
 ### データフロー
 
 1. **投稿の取得**: `features/posts/lib/wordpress.ts` の関数を使用して WordPress REST API からデータを取得
-2. **認証**: `features/auth/lib/auth.ts` の関数を使用して JWT トークンを管理
-3. **画像**: `next.config.js` で WordPress の画像ドメイン（localhost:8888）を許可
+2. **画像**: `next.config.js` で WordPress の画像ドメイン（localhost:8888）を許可
 
 ### 重要な設計パターン
 
 #### WordPress REST API との通信
 
 - `features/posts/lib/wordpress.ts` に投稿関連の API 呼び出しロジックを集約
-- `lib/wordpress-common.ts` に共通の WordPress API 関数を配置（`getCurrentUser` など）
 - 環境変数 `NEXT_PUBLIC_WP_URL` と `NEXT_PUBLIC_WP_API_URL` で接続先を管理（`apps/frontend/.env.local` に設定）
 - `_embed=true` パラメータでアイキャッチ画像や著者情報を同時取得
 - Next.js の `next.revalidate` で 60 秒キャッシュを設定
-
-#### JWT 認証
-
-- `features/auth/lib/auth.ts` はクライアントサイド専用（`'use client'` ディレクティブ）
-- トークンは localStorage に保存（`wp_jwt_token` キー）
-- `getAuthHeaders()` で Authorization ヘッダーを生成
-- WordPress の JWT プラグイン（jwt-authentication-for-wp-rest-api）を使用
 
 #### WordPress 環境（wp-env）
 
 - `apps/wordpress/.wp-env.json` で環境を定義
 - PHP 8.3、WordPress 最新版
-- JWT プラグインは自動インストール・有効化（`afterStart` フックで自動実行）
 - デバッグモード有効（`WP_DEBUG: true`）
 - `apps/wordpress/wp-content/plugins` と `apps/wordpress/wp-content/themes` をローカルディレクトリにマッピング
 
@@ -163,13 +145,12 @@ apps/wordpress/          # WordPress 設定とコンテンツ
 
 ### パーマリンク設定
 
-パーマリンク設定と JWT プラグインの有効化は `pnpm run dev` 時の `afterStart` フックで自動実行されます。手動で再実行する場合は `pnpm run wp:setup` を使用してください。
+パーマリンク設定は `pnpm run dev` 時の `afterStart` フックで自動実行されます。手動で再実行する場合は `pnpm run wp:setup` を使用してください。
 
 ### 型定義
 
 WordPress REST API のレスポンス型は各機能の `types.ts` ファイルで定義されています：
 - 投稿関連: `features/posts/types.ts`
-- 認証関連: `features/auth/types.ts`
 - ブロック関連: `features/blocks/types.ts`
 
 新しいエンドポイントを追加する場合は、対応する機能の `types.ts` に型定義を追加してください。
