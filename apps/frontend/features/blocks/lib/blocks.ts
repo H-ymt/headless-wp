@@ -1,3 +1,5 @@
+import type { Block } from "@/features/blocks/types";
+
 export type { Block } from "@/features/blocks/types";
 
 // 正規表現をトップレベルで定義（パフォーマンス向上）

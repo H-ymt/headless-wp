@@ -26,3 +26,9 @@ export type Post = {
     }>;
   };
 };
+
+export type PostsResponse = {
+  posts: Post[];
+  totalPages: number;
+  total: number;
+};
