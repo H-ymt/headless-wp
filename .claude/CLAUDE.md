@@ -1,14 +1,14 @@
-# Ultracite Code Standards
+# Biome Code Standards
 
-This project uses **Ultracite**, a zero-config Biome preset that enforces strict code quality standards through automated formatting and linting.
+This project uses **Biome** for fast Rust-based linting and formatting.
 
 ## Quick Reference
 
-- **Format code**: `npx ultracite fix`
-- **Check for issues**: `npx ultracite check`
-- **Diagnose setup**: `npx ultracite doctor`
+- **Format code**: `pnpm format`
+- **Check for issues**: `pnpm format:check`
+- **Lint & fix**: `pnpm lint:fix`
 
-Biome (the underlying engine) provides extremely fast Rust-based linting and formatting. Most issues are automatically fixable.
+Most issues are automatically fixable.
 
 ---
 
@@ -120,4 +120,4 @@ Biome's linter will catch most issues automatically. Focus your attention on:
 
 ---
 
-Most formatting and common issues are automatically fixed by Biome. Run `npx ultracite fix` before committing to ensure compliance.
+Most formatting and common issues are automatically fixed by Biome. Run `pnpm lint:fix` before committing to ensure compliance.

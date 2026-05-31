@@ -9,10 +9,10 @@
     "dev:next": "turbo run dev --filter=@headless-wp/frontend",
     "build": "turbo run build",
     "start": "turbo run start --filter=@headless-wp/frontend",
-    "format": "ultracite fix",
-    "format:check": "ultracite check",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
     "lint": "turbo run lint",
-    "lint:fix": "ultracite fix",
+    "lint:fix": "biome check --write .",
     "lint:next": "turbo run lint --filter=@headless-wp/frontend",
     "wp:start": "pnpm --filter wordpress start",
     "wp:stop": "pnpm --filter wordpress stop",
@@ -24,7 +24,6 @@
     "concurrently": "^8.2.2",
     "lefthook": "^2.1.9",
     "turbo": "^2.9.16",
-    "ultracite": "6.3.2",
     "wait-on": "^7.2.0"
   },
   "engines": {
