@@ -3,5 +3,5 @@ packages:
   - 'packages/*'
   - 'wordpress'
 allowBuilds:
-  lefthook: set this to true or false
-  sharp: set this to true or false
+  lefthook: true
+  sharp: true
