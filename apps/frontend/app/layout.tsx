@@ -5,8 +5,20 @@ import Link from "next/link";
 const WP_URL = process.env.NEXT_PUBLIC_WP_URL || "http://localhost:8888";
 
 export const metadata: Metadata = {
-  title: "Headless WordPress",
-  description: "Headless WordPress with Next.js",
+  title: {
+    default: "Headless WordPress",
+    template: "%s | Headless WordPress",
+  },
+  description:
+    "WordPressをヘッドレスCMSとして使用し、Next.jsで構築されたWebサイトです。",
+  openGraph: {
+    type: "website",
+    siteName: "Headless WordPress",
+    locale: "ja_JP",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 export default function RootLayout({
@@ -48,6 +60,9 @@ export default function RootLayout({
                 </Link>
                 <Link className="font-medium text-sm" href="/posts">
                   投稿
+                </Link>
+                <Link className="font-medium text-sm" href="/categories">
+                  カテゴリー
                 </Link>
               </nav>
             </div>

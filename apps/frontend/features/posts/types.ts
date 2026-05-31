@@ -15,6 +15,7 @@ export type Post = {
   };
   author: number;
   featured_media: number;
+  categories: number[];
   _embedded?: {
     "wp:featuredmedia"?: Array<{
       source_url: string;

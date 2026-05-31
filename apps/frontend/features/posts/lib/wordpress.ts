@@ -8,6 +8,7 @@ export async function getPosts(params?: {
   per_page?: number;
   page?: number;
   search?: string;
+  categories?: number;
 }): Promise<Post[]> {
   const searchParams = new URLSearchParams();
 
@@ -19,6 +20,9 @@ export async function getPosts(params?: {
   }
   if (params?.search) {
     searchParams.append("search", params.search);
+  }
+  if (params?.categories) {
+    searchParams.append("categories", params.categories.toString());
   }
   searchParams.append("_embed", "true");
 
@@ -38,10 +42,14 @@ export async function getPosts(params?: {
 export async function getPostsWithPagination(params?: {
   per_page?: number;
   page?: number;
+  search?: string;
 }): Promise<PostsResponse> {
   const searchParams = new URLSearchParams();
   searchParams.append("per_page", (params?.per_page ?? 10).toString());
   searchParams.append("page", (params?.page ?? 1).toString());
+  if (params?.search) {
+    searchParams.append("search", params.search);
+  }
   searchParams.append("_embed", "true");
 
   const url = `${WP_API_URL}/posts?${searchParams.toString()}`;

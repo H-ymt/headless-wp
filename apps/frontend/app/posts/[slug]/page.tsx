@@ -31,15 +31,27 @@ export async function generateMetadata({
   }
 
   const featuredImage = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
+  const description = post.excerpt.rendered
+    ? post.excerpt.rendered.replace(/<[^>]*>/g, "").slice(0, 160)
+    : "WordPressの投稿ページです。";
 
   return {
-    title: `${post.title.rendered} | Headless WordPress`,
-    description: post.excerpt.rendered
-      ? post.excerpt.rendered.replace(/<[^>]*>/g, "").slice(0, 160)
-      : "WordPressの投稿ページです。",
-    ...(featuredImage && {
-      openGraph: { images: [featuredImage] },
-    }),
+    title: post.title.rendered,
+    description,
+    openGraph: {
+      type: "article",
+      title: post.title.rendered,
+      description,
+      publishedTime: post.date,
+      modifiedTime: post.modified,
+      ...(featuredImage && {
+        images: [{ url: featuredImage, width: 1200, height: 630 }],
+      }),
+    },
+    twitter: {
+      card: "summary_large_image",
+      ...(featuredImage && { images: [featuredImage] }),
+    },
   };
 }
 
